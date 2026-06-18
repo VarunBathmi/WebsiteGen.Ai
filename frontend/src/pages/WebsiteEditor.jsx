@@ -23,21 +23,19 @@ import CreditUsageBar from "../components/CreditUsageBar";
 /* ─── EditorHeader ─────────────────────────────────────── */
 const EditorHeader = ({ title, onClose, onBack }) => (
   <div
-    className="h-12 px-4 flex items-center justify-between shrink-0"
-    style={{ borderBottom: "1px solid var(--border)" }}
+    className="h-12 px-4 flex items-center justify-between shrink-0 border-b border-[var(--border)]"
   >
     <div className="flex items-center gap-2 overflow-hidden">
       {onBack && (
         <button
           onClick={onBack}
           aria-label="Back"
-          className="p-1.5 rounded-lg shrink-0 transition-all"
-          style={{ color: "var(--text-secondary)" }}
+          className="p-1.5 rounded-lg shrink-0 transition-all text-[var(--text-secondary)]"
         >
           <ArrowLeft size={16} />
         </button>
       )}
-      <span className="text-sm font-medium truncate" style={{ color: "var(--text-primary)" }}>
+      <span className="text-sm font-medium truncate text-[var(--text-primary)]">
         {title}
       </span>
     </div>
@@ -45,8 +43,7 @@ const EditorHeader = ({ title, onClose, onBack }) => (
       <button
         onClick={onClose}
         aria-label="Close"
-        className="p-1.5 rounded-lg shrink-0 transition-all"
-        style={{ color: "var(--text-secondary)" }}
+        className="p-1.5 rounded-lg shrink-0 transition-all text-[var(--text-secondary)]"
       >
         <X size={16} />
       </button>
@@ -95,8 +92,8 @@ const ChatPanel = ({
       <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3">
         {messages.length === 0 && (
           <div className="flex flex-col items-center justify-center h-full text-center py-10">
-            <MessageSquare size={28} className="mb-3" style={{ color: "var(--text-muted)" }} />
-            <p className="text-sm" style={{ color: "var(--text-muted)" }}>
+            <MessageSquare size={28} className="mb-3 text-[var(--text-muted)]" />
+            <p className="text-sm text-[var(--text-muted)]">
               Describe changes to update your website
             </p>
           </div>
@@ -104,12 +101,11 @@ const ChatPanel = ({
         {messages.map((m, i) => (
           <div key={i} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
             <div
-              className="max-w-[82%] px-3.5 py-2.5 rounded-2xl text-sm leading-relaxed"
-              style={
+              className={`max-w-[82%] px-3.5 py-2.5 rounded-2xl text-sm leading-relaxed ${
                 m.role === "user"
-                  ? { background: "#ffffff", color: "#000" }
-                  : { background: "var(--bg-card)", border: "1px solid var(--border)", color: "var(--text-primary)" }
-              }
+                  ? "bg-white text-black"
+                  : "bg-[var(--bg-card)] border border-[var(--border)] text-[var(--text-primary)]"
+              }`}
             >
               {m.content}
             </div>
@@ -118,8 +114,7 @@ const ChatPanel = ({
         {updateLoading && (
           <div className="flex justify-start">
             <div
-              className="max-w-[82%] px-3.5 py-2.5 rounded-2xl text-xs italic flex items-center gap-2"
-              style={{ background: "var(--bg-card)", border: "1px solid var(--border)", color: "var(--text-muted)" }}
+              className="max-w-[82%] px-3.5 py-2.5 rounded-2xl text-xs italic flex items-center gap-2 bg-[var(--bg-card)] border border-[var(--border)] text-[var(--text-muted)]"
             >
               <ThinkingDots />
               <span>{thinkingSteps[thinkingIndex]}</span>
@@ -130,10 +125,9 @@ const ChatPanel = ({
       </div>
 
       {/* Input */}
-      <div className="p-3 shrink-0" style={{ borderTop: "1px solid var(--border)" }}>
+      <div className="p-3 shrink-0 border-t border-[var(--border)]">
         <div
-          className="flex gap-2 rounded-2xl p-2"
-          style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}
+          className="flex gap-2 rounded-2xl p-2 bg-[var(--bg-card)] border border-[var(--border)]"
         >
           <textarea
             ref={textareaRef}
@@ -143,15 +137,13 @@ const ChatPanel = ({
             placeholder="Describe changes… (Enter to send)"
             onChange={(e) => setPrompt(e.target.value)}
             onKeyDown={onKeyDown}
-            className="flex-1 resize-none bg-transparent px-2 py-1.5 text-sm leading-relaxed outline-none disabled:opacity-50"
-            style={{ color: "var(--text-primary)", maxHeight: "120px" }}
+            className="flex-1 resize-none bg-transparent px-2 py-1.5 text-sm leading-relaxed outline-none disabled:opacity-50 text-[var(--text-primary)] max-h-[120px]"
           />
           <button
             onClick={handleUpdate}
             disabled={updateLoading || !prompt.trim()}
             aria-label="Send"
-            className="shrink-0 self-end w-8 h-8 rounded-xl flex items-center justify-center text-black transition-all disabled:opacity-40 disabled:cursor-not-allowed"
-            style={{ background: "#ffffff" }}
+            className="shrink-0 self-end w-8 h-8 rounded-xl flex items-center justify-center text-black transition-all disabled:opacity-40 disabled:cursor-not-allowed bg-white"
           >
             <Send size={13} />
           </button>
@@ -288,12 +280,11 @@ const WebsiteEditor = () => {
   /* Error */
   if (error) {
     return (
-      <div className="h-screen flex flex-col items-center justify-center gap-4" style={{ background: "var(--bg-base)" }}>
+      <div className="h-screen flex flex-col items-center justify-center gap-4 bg-[var(--bg-base)]">
         <p className="text-red-400 text-sm">{error}</p>
         <button
           onClick={() => navigate("/dashboard")}
-          className="text-sm underline"
-          style={{ color: "var(--text-secondary)" }}
+          className="text-sm underline text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
         >
           Back to Dashboard
         </button>
@@ -304,14 +295,13 @@ const WebsiteEditor = () => {
   /* Loading */
   if (!website) {
     return (
-      <div className="h-screen flex items-center justify-center" style={{ background: "var(--bg-base)" }}>
+      <div className="h-screen flex items-center justify-center bg-[var(--bg-base)]">
         <div className="flex gap-1.5">
           {[0, 1, 2].map((i) => (
             <span
               key={i}
-              className="w-2 h-2 rounded-full"
+              className="w-2 h-2 rounded-full bg-[var(--border)]"
               style={{
-                background: "var(--border)",
                 animation: `ldpulse 1.2s ease-in-out ${i * 0.2}s infinite`,
               }}
             />
@@ -328,15 +318,11 @@ const WebsiteEditor = () => {
   };
 
   return (
-    <div className="h-screen w-screen flex overflow-hidden" style={{ background: "var(--bg-base)" }}>
+    <div className="h-screen w-screen flex overflow-hidden bg-[var(--bg-base)]">
 
       {/* ── Desktop chat sidebar ── */}
       <aside
-        className="hidden lg:flex flex-col shrink-0"
-        style={{
-          width: "clamp(280px, 25vw, 360px)",
-          borderRight: "1px solid var(--border)",
-        }}
+        className="hidden lg:flex flex-col shrink-0 w-[clamp(280px,25vw,360px)] border-r border-[var(--border)]"
       >
         <EditorHeader title={website.title} onBack={() => navigate("/dashboard")} />
         <ChatPanel {...chatProps} />
@@ -347,14 +333,12 @@ const WebsiteEditor = () => {
 
         {/* Toolbar */}
         <div
-          className="h-12 px-3 sm:px-4 flex items-center justify-between shrink-0 gap-2"
-          style={{ borderBottom: "1px solid var(--border)" }}
+          className="h-12 px-3 sm:px-4 flex items-center justify-between shrink-0 gap-2 border-b border-[var(--border)]"
         >
           {/* Left */}
           <div className="flex items-center gap-2 min-w-0">
             <button
-              className="lg:hidden p-1.5 rounded-lg shrink-0 transition-all"
-              style={{ color: "var(--text-secondary)" }}
+              className="lg:hidden p-1.5 rounded-lg shrink-0 transition-all text-[var(--text-secondary)]"
               onClick={() => navigate("/dashboard")}
               aria-label="Back"
             >
@@ -362,8 +346,7 @@ const WebsiteEditor = () => {
             </button>
 
             <span
-              className="text-xs font-medium tracking-wide uppercase hidden sm:block"
-              style={{ color: "var(--text-muted)" }}
+              className="text-xs font-medium tracking-wide uppercase hidden sm:block text-[var(--text-muted)]"
             >
               Live Preview
             </span>
@@ -373,12 +356,7 @@ const WebsiteEditor = () => {
               whileHover={{ scale: 1.04 }}
               whileTap={{ scale: 0.97 }}
               onClick={() => navigate("/generate")}
-              className="hidden lg:flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium"
-              style={{
-                background: "var(--bg-card)",
-                border: "1px solid var(--border)",
-                color: "var(--text-secondary)",
-              }}
+              className="hidden lg:flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium bg-[var(--bg-card)] border border-[var(--border)] text-[var(--text-secondary)]"
             >
               <Plus size={12} /> New
             </motion.button>
@@ -398,8 +376,7 @@ const WebsiteEditor = () => {
                 whileHover={{ scale: 1.04 }}
                 whileTap={{ scale: 0.97 }}
                 onClick={handleDeploy}
-                className="flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3.5 py-1.5 rounded-lg text-white text-xs font-semibold"
-                style={{ background: "linear-gradient(135deg, #7c3aed, #4f46e5)" }}
+                className="flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3.5 py-1.5 rounded-lg text-white text-xs font-semibold bg-gradient-to-br from-[#7c3aed] to-[#4f46e5]"
               >
                 <Rocket size={12} />
                 <span>Deploy</span>
@@ -409,12 +386,11 @@ const WebsiteEditor = () => {
                 whileHover={{ scale: 1.04 }}
                 whileTap={{ scale: 0.97 }}
                 onClick={handleCopyDeployLink}
-                className="flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3.5 py-1.5 rounded-lg text-xs font-semibold"
-                style={{
-                  background: copiedLink ? "rgba(16,185,129,0.15)" : "linear-gradient(135deg, #10b981, #059669)",
-                  color: copiedLink ? "#34d399" : "#fff",
-                  border: copiedLink ? "1px solid rgba(52,211,153,0.3)" : "none",
-                }}
+                className={`flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3.5 py-1.5 rounded-lg text-xs font-semibold ${
+                  copiedLink
+                    ? "bg-[rgba(16,185,129,0.15)] text-[#34d399] border border-[rgba(52,211,153,0.3)]"
+                    : "bg-gradient-to-br from-[#10b981] to-[#059669] text-white border-none"
+                }`}
               >
                 {copiedLink ? <><Check size={12} /> Copied!</> : <><Copy size={12} /> <span className="hidden sm:inline">Share</span></>}
               </motion.button>
@@ -422,8 +398,7 @@ const WebsiteEditor = () => {
 
             {/* Mobile chat toggle */}
             <button
-              className="lg:hidden p-2 rounded-lg transition-all"
-              style={{ color: "var(--text-secondary)" }}
+              className="lg:hidden p-2 rounded-lg transition-all text-[var(--text-secondary)]"
               onClick={() => setShowChat(true)}
               aria-label="Open chat"
             >
@@ -432,8 +407,7 @@ const WebsiteEditor = () => {
 
             {/* Code view */}
             <button
-              className="p-2 rounded-lg transition-all"
-              style={{ color: "var(--text-secondary)" }}
+              className="p-2 rounded-lg transition-all text-[var(--text-secondary)]"
               onClick={() => setShowCode(true)}
               aria-label="View code"
             >
@@ -442,8 +416,7 @@ const WebsiteEditor = () => {
 
             {/* Full preview */}
             <button
-              className="p-2 rounded-lg transition-all"
-              style={{ color: "var(--text-secondary)" }}
+              className="p-2 rounded-lg transition-all text-[var(--text-secondary)]"
               onClick={() => setShowFullPreview(true)}
               aria-label="Full screen"
             >
@@ -469,8 +442,7 @@ const WebsiteEditor = () => {
             animate={{ y: 0 }}
             exit={{ y: "100%" }}
             transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
-            className="fixed inset-0 z-[9999] flex flex-col"
-            style={{ background: "var(--bg-base)" }}
+            className="fixed inset-0 z-[9999] flex flex-col bg-[var(--bg-base)]"
           >
             <EditorHeader title={website.title} onClose={() => setShowChat(false)} />
             <ChatPanel {...chatProps} />
@@ -486,29 +458,25 @@ const WebsiteEditor = () => {
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ duration: 0.28, ease: [0.4, 0, 0.2, 1] }}
-            className="fixed inset-y-0 right-0 w-full lg:w-[48%] z-[9999] flex flex-col"
-            style={{ background: "var(--bg-elevated)" }}
+            className="fixed inset-y-0 right-0 w-full lg:w-[48%] z-[9999] flex flex-col bg-[var(--bg-elevated)]"
           >
             <div
-              className="h-12 px-4 flex items-center justify-between shrink-0"
-              style={{ borderBottom: "1px solid var(--border)" }}
+              className="h-12 px-4 flex items-center justify-between shrink-0 border-b border-[var(--border)]"
             >
-              <span className="text-sm font-medium" style={{ color: "var(--text-primary)" }}>
+              <span className="text-sm font-medium text-[var(--text-primary)]">
                 index.html
               </span>
               <div className="flex items-center gap-2">
                 <button
                   onClick={handleCopyCode}
-                  className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs transition-all"
-                  style={{ color: "var(--text-secondary)" }}
+                  className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs transition-all text-[var(--text-secondary)]"
                 >
                   {copiedCode ? <Check size={13} className="text-green-400" /> : <Copy size={13} />}
                   {copiedCode ? "Copied!" : "Copy"}
                 </button>
                 <button
                   onClick={() => setShowCode(false)}
-                  className="p-1.5 rounded-lg transition-all"
-                  style={{ color: "var(--text-secondary)" }}
+                  className="p-1.5 rounded-lg transition-all text-[var(--text-secondary)]"
                 >
                   <X size={16} />
                 </button>
@@ -571,16 +539,10 @@ const WebsiteEditor = () => {
             </button> */}
 
             <button
-  onClick={() => setShowFullPreview(false)}
-  aria-label="Close"
-  className="absolute top-4 right-4 p-2 rounded-xl transition-all"
-  style={{
-    background: "rgba(0,0,0,0.08)",
-    color: "var(--text-primary)",
-    border: "1px solid var(--border)",
-    backdropFilter: "blur(8px)",
-  }}
->
+              onClick={() => setShowFullPreview(false)}
+              aria-label="Close"
+              className="absolute top-4 right-4 p-2 rounded-xl transition-all bg-[rgba(0,0,0,0.08)] text-[var(--text-primary)] border border-[var(--border)] backdrop-blur-[8px]"
+            >
   <X size={18} />
 </button>
           </motion.div>

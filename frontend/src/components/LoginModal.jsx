@@ -72,8 +72,7 @@ const LoginModal = ({ open, onClose, onSwitchToSignup }) => {
     <AnimatePresence>
       {open && (
         <motion.div
-          className="fixed inset-0 z-[100] flex items-center justify-center px-4"
-          style={{ background: "rgba(0,0,0,0.75)", backdropFilter: "blur(16px)" }}
+          className="fixed inset-0 z-[100] flex items-center justify-center px-4 bg-black/75 backdrop-blur-[16px]"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -86,23 +85,16 @@ const LoginModal = ({ open, onClose, onSwitchToSignup }) => {
             exit={{ scale: 0.92, opacity: 0, y: 24 }}
             transition={{ duration: 0.35, ease: easeOut }}
             onClick={(e) => e.stopPropagation()}
-            className="relative w-full max-w-[400px] rounded-3xl overflow-hidden"
-            style={{
-              background: "var(--bg-elevated)",
-              border: "1px solid var(--border)",
-              boxShadow: "var(--shadow-lg)",
-            }}
+            className="relative w-full max-w-[400px] rounded-3xl overflow-hidden bg-[var(--bg-elevated)] border border-[var(--border)] shadow-[var(--shadow-lg)]"
           >
             {/* Ambient glow */}
             <div
               aria-hidden
-              className="absolute -top-24 -left-24 w-64 h-64 rounded-full pointer-events-none"
-              style={{ background: "radial-gradient(circle, rgba(168,85,247,0.15), transparent 70%)" }}
+              className="absolute -top-24 -left-24 w-64 h-64 rounded-full pointer-events-none bg-[radial-gradient(circle,rgba(168,85,247,0.15),transparent_70%)]"
             />
             <div
               aria-hidden
-              className="absolute -bottom-24 -right-24 w-64 h-64 rounded-full pointer-events-none"
-              style={{ background: "radial-gradient(circle, rgba(59,130,246,0.1), transparent 70%)" }}
+              className="absolute -bottom-24 -right-24 w-64 h-64 rounded-full pointer-events-none bg-[radial-gradient(circle,rgba(59,130,246,0.1),transparent_70%)]"
             />
 
             <div className="relative px-7 pt-8 pb-8">
@@ -118,24 +110,14 @@ const LoginModal = ({ open, onClose, onSwitchToSignup }) => {
               {/* Header */}
               <div className="text-center mb-7">
                 <div
-                  className="inline-flex items-center gap-1.5 mb-4 px-3 py-1.5 rounded-full text-xs font-medium"
-                  style={{
-                    background: "rgba(168,85,247,0.1)",
-                    border: "1px solid rgba(168,85,247,0.2)",
-                    color: "#c084fc",
-                  }}
+                  className="inline-flex items-center gap-1.5 mb-4 px-3 py-1.5 rounded-full text-xs font-medium bg-[rgba(168,85,247,0.1)] border border-[rgba(168,85,247,0.2)] text-[#c084fc]"
                 >
                   <Sparkles size={10} /> AI-Powered Website Builder
                 </div>
                 <h2 className="text-2xl font-bold mb-1.5">
                   Welcome{" "}
                   <span
-                    style={{
-                      background: "linear-gradient(135deg, #c084fc, #60a5fa)",
-                      WebkitBackgroundClip: "text",
-                      backgroundClip: "text",
-                      WebkitTextFillColor: "transparent",
-                    }}
+                    className="bg-gradient-to-r from-[#c084fc] to-[#60a5fa] bg-clip-text text-transparent"
                   >
                     back
                   </span>
@@ -180,8 +162,7 @@ const LoginModal = ({ open, onClose, onSwitchToSignup }) => {
                   whileHover={!loading ? { scale: 1.02 } : {}}
                   whileTap={!loading ? { scale: 0.97 } : {}}
                   disabled={loading}
-                  className="w-full h-11 mt-1 rounded-xl text-white font-semibold text-sm transition-all disabled:opacity-50"
-                  style={{ background: "linear-gradient(135deg, #a855f7, #3b82f6)" }}
+                  className="w-full h-11 mt-1 rounded-xl text-white font-semibold text-sm transition-all disabled:opacity-50 bg-gradient-to-br from-[#a855f7] to-[#3b82f6]"
                 >
                   {loading ? "Signing in…" : "Sign In"}
                 </motion.button>
@@ -189,9 +170,9 @@ const LoginModal = ({ open, onClose, onSwitchToSignup }) => {
 
               {/* Divider */}
               <div className="flex items-center gap-3 my-5">
-                <div className="h-px flex-1" style={{ background: "var(--border)" }} />
+                <div className="h-px flex-1 bg-[var(--border)]" />
                 <span className="text-xs text-zinc-600">or</span>
-                <div className="h-px flex-1" style={{ background: "var(--border)" }} />
+                <div className="h-px flex-1 bg-[var(--border)]" />
               </div>
 
               {/* Google */}
@@ -199,8 +180,7 @@ const LoginModal = ({ open, onClose, onSwitchToSignup }) => {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.97 }}
                 onClick={handleGoogleAuth}
-                className="w-full h-11 rounded-xl bg-white text-black font-semibold text-sm flex items-center justify-center gap-2.5 transition-all"
-                style={{ boxShadow: "0 2px 12px var(--border)" }}
+                className="w-full h-11 rounded-xl bg-white text-black font-semibold text-sm flex items-center justify-center gap-2.5 transition-all shadow-[0_2px_12px_var(--border)]"
               >
                 <img
                   src="https://www.svgrepo.com/show/303108/google-icon-logo.svg"

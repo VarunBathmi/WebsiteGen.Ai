@@ -79,13 +79,11 @@ const ProfileDropdown = () => {
         aria-expanded={open}
       >
         <div
-          className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold overflow-hidden shrink-0"
-          style={{
-            background: userData?.avatar
-              ? "transparent"
-              : "linear-gradient(135deg, var(--accent), #3b82f6)",
-            color: "#fff",
-          }}
+          className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold overflow-hidden shrink-0 text-white ${
+            userData?.avatar
+              ? "bg-transparent"
+              : "bg-[linear-gradient(135deg,var(--accent),#3b82f6)]"
+          }`}
         >
           {userData?.avatar ? (
             <img
@@ -112,8 +110,9 @@ const ProfileDropdown = () => {
 
         <ChevronDown
           size={14}
-          className="text-[var(--text-muted)] transition-transform duration-200"
-          style={{ transform: open ? "rotate(180deg)" : "rotate(0deg)" }}
+          className={`text-[var(--text-muted)] transition-transform duration-200 ${
+            open ? "rotate-180" : "rotate-0"
+          }`}
         />
       </button>
 
@@ -125,28 +124,16 @@ const ProfileDropdown = () => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -8, scale: 0.96 }}
             transition={{ duration: 0.18, ease: [0.4, 0, 0.2, 1] }}
-            className="absolute right-0 mt-2 w-64 z-50 rounded-2xl overflow-hidden"
-            style={{
-              background: "var(--bg-elevated)",
-              border: "1px solid var(--border)",
-              boxShadow: "var(--shadow-lg)",
-              backdropFilter: "blur(24px)",
-              WebkitBackdropFilter: "blur(24px)",
-            }}
+            className="absolute right-0 mt-2 w-64 z-50 rounded-2xl overflow-hidden bg-[var(--bg-elevated)] border border-[var(--border)] shadow-[var(--shadow-lg)] backdrop-blur-[24px]"
           >
             {/* Header — name + email only, no plan badge */}
-            <div
-              className="px-4 py-4 flex items-center gap-3"
-              style={{ borderBottom: "1px solid var(--border)" }}
-            >
+            <div className="px-4 py-4 flex items-center gap-3 border-b border-[var(--border)]">
               <div
-                className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold overflow-hidden shrink-0"
-                style={{
-                  background: userData?.avatar
-                    ? "transparent"
-                    : "linear-gradient(135deg, var(--accent), #3b82f6)",
-                  color: "#fff",
-                }}
+                className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold overflow-hidden shrink-0 text-white ${
+                  userData?.avatar
+                    ? "bg-transparent"
+                    : "bg-[linear-gradient(135deg,var(--accent),#3b82f6)]"
+                }`}
               >
                 {userData?.avatar ? (
                   <img
@@ -189,10 +176,7 @@ const ProfileDropdown = () => {
             </div>
 
             {/* Dark mode toggle */}
-            <div
-              className="px-4 py-2.5 flex items-center justify-between"
-              style={{ borderTop: "1px solid var(--border)" }}
-            >
+            <div className="px-4 py-2.5 flex items-center justify-between border-t border-[var(--border)]">
               <div className="flex items-center gap-3 text-[13px] text-[var(--text-secondary)]">
                 {theme === "dark" ? (
                   <Moon size={15} className="text-[var(--text-muted)]" />
@@ -204,28 +188,24 @@ const ProfileDropdown = () => {
               <button
                 onClick={toggleTheme}
                 aria-label="Toggle dark mode"
-                className="relative w-10 h-5 rounded-full transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]"
-                style={{
-                  background:
-                    theme === "dark" ? "var(--accent)" : "var(--border-strong)",
-                }}
+                className={`relative w-10 h-5 rounded-full transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] ${
+                  theme === "dark"
+                    ? "bg-[var(--accent)]"
+                    : "bg-[var(--border-strong)]"
+                }`}
               >
                 <motion.span
                   layout
                   transition={{ type: "spring", stiffness: 500, damping: 35 }}
-                  className="absolute top-0.5 w-4 h-4 rounded-full bg-white shadow-sm"
-                  style={{
-                    left: theme === "dark" ? "calc(100% - 18px)" : "2px",
-                  }}
+                  className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow-sm ${
+                    theme === "dark" ? "left-[calc(100%-18px)]" : "left-[2px]"
+                  }`}
                 />
               </button>
             </div>
 
             {/* Sign out */}
-            <div
-              className="pb-1.5"
-              style={{ borderTop: "1px solid var(--border)" }}
-            >
+            <div className="pb-1.5 border-t border-[var(--border)]">
               <button
                 onClick={() => {
                   setOpen(false);

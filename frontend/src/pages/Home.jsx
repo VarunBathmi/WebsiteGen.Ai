@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import LoginModal from "../components/LoginModal";
-import SignupModal from "../components/SignupModal";
+import SignupModal from "../components/Signupmodal";
 import { useDispatch, useSelector } from "react-redux";
 import {
   Coins,
@@ -117,16 +117,10 @@ const Home = () => {
         className="fixed inset-0 pointer-events-none z-0 overflow-hidden"
       >
         <div
-          className="absolute -top-40 left-1/4 w-[600px] h-[600px] rounded-full opacity-[0.07]"
-          style={{
-            background: "radial-gradient(circle, #a855f7, transparent 70%)",
-          }}
+          className="absolute -top-40 left-1/4 w-[600px] h-[600px] rounded-full opacity-[0.07] bg-[radial-gradient(circle,#a855f7,transparent_70%)]"
         />
         <div
-          className="absolute top-1/2 -right-40 w-[500px] h-[500px] rounded-full opacity-[0.05]"
-          style={{
-            background: "radial-gradient(circle, #3b82f6, transparent 70%)",
-          }}
+          className="absolute top-1/2 -right-40 w-[500px] h-[500px] rounded-full opacity-[0.05] bg-[radial-gradient(circle,#3b82f6,transparent_70%)]"
         />
       </div>
 
@@ -135,20 +129,13 @@ const Home = () => {
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
-        className="fixed top-0 left-0 right-0 z-50"
-        style={{
-          backdropFilter: "blur(20px)",
-          WebkitBackdropFilter: "blur(20px)",
-          background: "var(--bg-elevated)",
-          borderBottom: "1px solid var(--border)",
-        }}
+        className="fixed top-0 left-0 right-0 z-50 backdrop-blur-[20px] bg-[var(--bg-elevated)] border-b border-[var(--border)]"
       >
         <div className="max-w-7xl mx-auto px-5 sm:px-8 h-[60px] flex items-center justify-between">
           {/* Logo */}
           <div className="flex items-center gap-2">
             <div
-              className="w-7 h-7 rounded-lg flex items-center justify-center text-[var(--text-primary)]"
-              style={{ background: "linear-gradient(135deg,#a855f7,#3b82f6)" }}
+              className="w-7 h-7 rounded-lg flex items-center justify-center text-[var(--text-primary)] bg-[linear-gradient(135deg,#a855f7,#3b82f6)]"
             >
               <Sparkles size={14} />
             </div>
@@ -166,11 +153,7 @@ const Home = () => {
             {/* Credits badge — desktop */}
             {userData && (
               <div
-                className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm"
-                style={{
-                  background: "var(--bg-card)",
-                  border: "1px solid var(--border)",
-                }}
+                className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm bg-[var(--bg-card)] border border-[var(--border)]"
               >
                 <Coins size={13} className="text-yellow-400" />
                 <span className="text-[var(--text-primary)] text-xs">
@@ -184,11 +167,7 @@ const Home = () => {
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}
                 onClick={() => setOpenLogin(true)}
-                className="px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-150"
-                style={{
-                  background: "var(--bg-card-hover)",
-                  border: "1px solid var(--border)",
-                }}
+                className="px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-150 bg-[var(--bg-card-hover)] border border-[var(--border)]"
               >
                 Get Started
               </motion.button>
@@ -221,17 +200,11 @@ const Home = () => {
                       exit={{ opacity: 0, y: -8, scale: 0.95 }}
                       transition={{ duration: 0.18, ease: [0.4, 0, 0.2, 1] }}
                       role="menu"
-                      className="absolute right-0 mt-2 w-56 z-50 rounded-2xl overflow-hidden"
-                      style={{
-                        background: "var(--bg-elevated)",
-                        border: "1px solid var(--border)",
-                        boxShadow: "var(--shadow-lg)",
-                      }}
+                      className="absolute right-0 mt-2 w-56 z-50 rounded-2xl overflow-hidden bg-[var(--bg-elevated)] border border-[var(--border)] shadow-[var(--shadow-lg)]"
                     >
                       {/* User info */}
                       <div
-                        className="px-4 py-3"
-                        style={{ borderBottom: "1px solid var(--border)" }}
+                        className="px-4 py-3 border-b border-[var(--border)]"
                       >
                         <p className="text-sm font-medium truncate">
                           {userData.name}
@@ -243,8 +216,7 @@ const Home = () => {
 
                       {/* Mobile credits */}
                       <button
-                        className="md:hidden w-full px-4 py-2.5 flex items-center gap-2 text-sm hover:bg-[var(--bg-card-hover)] transition-colors"
-                        style={{ borderBottom: "1px solid var(--border)" }}
+                        className="md:hidden w-full px-4 py-2.5 flex items-center gap-2 text-sm hover:bg-[var(--bg-card-hover)] transition-colors border-b border-[var(--border)]"
                         role="menuitem"
                       >
                         <Coins size={13} className="text-yellow-400" />
@@ -287,8 +259,7 @@ const Home = () => {
                       {/* Sign out */}
                       <button
                         onClick={handleLogOut}
-                        className="w-full px-4 py-2.5 text-left text-sm text-red-400 hover:bg-[var(--bg-card-hover)] transition-colors   flex items-center gap-2.5"
-                        style={{ borderTop: "1px solid var(--border)" }}
+                        className="w-full px-4 py-2.5 text-left text-sm text-red-400 hover:bg-[var(--bg-card-hover)] transition-colors flex items-center gap-2.5 border-t border-[var(--border)]"
                         role="menuitem"
                       >
                         <LogOut size={13} className="shrink-0" />
@@ -309,12 +280,7 @@ const Home = () => {
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
-          className="inline-flex items-center gap-1.5 mb-7 px-3.5 py-1.5 rounded-full text-xs font-medium"
-          style={{
-            background: "rgba(168,85,247,0.1)",
-            border: "1px solid rgba(168,85,247,0.25)",
-            color: "#c084fc",
-          }}
+          className="inline-flex items-center gap-1.5 mb-7 px-3.5 py-1.5 rounded-full text-xs font-medium bg-[rgba(168,85,247,0.1)] border border-[rgba(168,85,247,0.25)] text-[#c084fc]"
         >
           <Sparkles size={11} />
           AI-Powered Website Builder
@@ -329,13 +295,7 @@ const Home = () => {
           Build Stunning Websites
           <br />
           <span
-            style={{
-              background:
-                "linear-gradient(135deg, #c084fc 0%, #818cf8 50%, #60a5fa 100%)",
-              WebkitBackgroundClip: "text",
-              backgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-            }}
+            className="bg-gradient-to-r from-[#c084fc] via-[#818cf8] to-[#60a5fa] bg-clip-text text-transparent"
           >
             with AI
           </span>
@@ -363,11 +323,7 @@ const Home = () => {
             onClick={() =>
               userData ? navigate("/dashboard") : setOpenLogin(true)
             }
-            className="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl font-semibold text-sm text-black"
-            style={{
-              background: "linear-gradient(135deg, #e2e8f0, #ffffff)",
-              boxShadow: "0 4px 24px var(--border)",
-            }}
+            className="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl font-semibold text-sm text-white bg-gradient-to-br from-[#a855f7] to-[#3b82f6] shadow-[0_4px_28px_rgba(168,85,247,0.45)]"
           >
             {userData ? "Go to Dashboard" : "Start Building Free"}
             <ArrowRight size={15} />
@@ -376,8 +332,7 @@ const Home = () => {
           {!userData && (
             <button
               onClick={() => setOpenSignup(true)}
-              className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl text-sm font-medium text-[var(--text-primary)] hover:text-[var(--text-primary)] transition-colors"
-              style={{ border: "1px solid var(--border)" }}
+              className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl text-sm font-medium text-[var(--text-primary)] hover:text-[var(--text-primary)] transition-colors border border-[var(--border)]"
             >
               Create account
             </button>
@@ -399,25 +354,10 @@ const Home = () => {
                 delay: i * 0.07,
                 ease: [0.4, 0, 0.2, 1],
               }}
-              className="group rounded-2xl p-7 transition-all duration-300 cursor-default"
-              style={{
-                background: "var(--bg-card)",
-                border: "1px solid var(--border)",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = "rgba(255,255,255,0.055)";
-                e.currentTarget.style.borderColor = "var(--border)";
-                e.currentTarget.style.transform = "translateY(-2px)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = "var(--bg-card)";
-                e.currentTarget.style.borderColor = "var(--border)";
-                e.currentTarget.style.transform = "translateY(0)";
-              }}
+              className="group rounded-2xl p-7 transition-all duration-300 cursor-default bg-[var(--bg-card)] border border-[var(--border)] hover:bg-[rgba(255,255,255,0.055)] hover:border-[var(--border)] hover:-translate-y-[2px]"
             >
               <div
-                className="w-9 h-9 rounded-lg flex items-center justify-center mb-5 text-purple-400"
-                style={{ background: "rgba(168,85,247,0.1)" }}
+                className="w-9 h-9 rounded-lg flex items-center justify-center mb-5 text-purple-400 bg-[rgba(168,85,247,0.1)]"
               >
                 {h.icon}
               </div>
@@ -434,8 +374,7 @@ const Home = () => {
 
       {/* ── Footer ─────────────────────────────────────────── */}
       <footer
-        className="relative z-10 py-8 text-center text-sm text-zinc-600"
-        style={{ borderTop: "1px solid var(--bg-card-hover)" }}
+        className="relative z-10 py-8 text-center text-sm text-zinc-600 border-t border-[var(--bg-card-hover)]"
       >
         <span>
           &copy; {new Date().getFullYear()} WebGen.ai. All rights reserved.

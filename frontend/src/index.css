@@ -5,13 +5,13 @@
   /* LIGHT THEME */
   --bg-base: #ffffff;
   --bg-elevated: #f4f4f5;
-  --bg-card: rgba(0, 0, 0, 0.03);
+  --bg-card: rgba(0, 0, 0, 0.04);
   --bg-card-hover: rgba(0, 0, 0, 0.06);
   --border: rgba(0, 0, 0, 0.1);
   --border-strong: rgba(0, 0, 0, 0.2);
   --text-primary: #09090b;
   --text-secondary: #111111;
-  --text-muted: #111222;
+  --text-muted: #71717a;
   --text-inverse: #ffffff;
   --accent: #9333ea;
   --accent-2: #2563eb;
@@ -86,10 +86,16 @@ textarea:focus-visible {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(0, 0, 0, 0.18);
   border-radius: 100px;
 }
+.dark ::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
+}
 ::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.28);
+}
+.dark ::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.2);
 }
 

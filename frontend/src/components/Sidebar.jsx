@@ -120,28 +120,13 @@ const CardMenu = ({ website, onDelete }) => {
     toast(
       (t) => (
         <div>
-          <p
-            style={{
-              fontSize: 13,
-              marginBottom: 10,
-              fontWeight: 500,
-              color: "var(--text-primary)",
-            }}
-          >
+          <p className="text-[13px] mb-2.5 font-medium text-[var(--text-primary)]">
             Delete "{website.title}"?
           </p>
-          <div style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
+          <div className="flex gap-2 justify-end">
             <button
               onClick={() => toast.dismiss(t.id)}
-              style={{
-                padding: "5px 12px",
-                fontSize: 12,
-                borderRadius: 8,
-                border: "1px solid var(--border)",
-                background: "var(--bg-card)",
-                color: "var(--text-primary)",
-                cursor: "pointer",
-              }}
+              className="px-3 py-1.25 text-[12px] rounded-lg border border-[var(--border)] bg-[var(--bg-card)] text-[var(--text-primary)] cursor-pointer"
             >
               Cancel
             </button>
@@ -150,15 +135,7 @@ const CardMenu = ({ website, onDelete }) => {
                 toast.dismiss(t.id);
                 onDelete(website._id);
               }}
-              style={{
-                padding: "5px 12px",
-                fontSize: 12,
-                borderRadius: 8,
-                border: "none",
-                background: "#dc2626",
-                color: "#fff",
-                cursor: "pointer",
-              }}
+              className="px-3 py-1.25 text-[12px] rounded-lg border-none bg-[#dc2626] text-white cursor-pointer"
             >
               Delete
             </button>
@@ -172,7 +149,7 @@ const CardMenu = ({ website, onDelete }) => {
   return (
     <div
       ref={menuRef}
-      style={{ position: "relative" }}
+      className="relative"
       onClick={(e) => e.stopPropagation()}
     >
       <button
@@ -180,35 +157,23 @@ const CardMenu = ({ website, onDelete }) => {
           e.stopPropagation();
           setOpen((v) => !v);
         }}
-        style={{ ...S.iconBtn, opacity: 1 }}
+        className="w-7 h-7 rounded-[6px] border-none bg-transparent cursor-pointer flex items-center justify-center opacity-100"
       >
         <MoreHorizontal size={14} color="var(--text-secondary)" />
       </button>
 
       {open && (
-        <div
-          style={{
-            position: "absolute",
-            right: 0,
-            top: 28,
-            zIndex: 100,
-            background: "var(--bg-elevated)",
-            border: "1px solid var(--border)",
-            borderRadius: 10,
-            padding: "4px",
-            minWidth: 160,
-            boxShadow: "0 8px 24px rgba(0,0,0,0.3)",
-          }}
-        >
-          <button onClick={handleShare} style={S.menuItem}>
+        <div className="absolute right-0 top-7 z-[100] bg-[var(--bg-elevated)] border border-[var(--border)] rounded-[10px] p-1 min-w-[160px] shadow-[0_8px_24px_rgba(0,0,0,0.3)]">
+          <button
+            onClick={handleShare}
+            className="flex items-center gap-2 px-[10px] py-[7px] rounded-[7px] cursor-pointer text-[13px] text-[var(--text-primary)] bg-transparent border-none w-full font-[inherit] text-left hover:bg-[var(--bg-card-hover)]"
+          >
             <Share2 size={13} /> Share link
           </button>
-          <div
-            style={{ height: 1, background: "var(--border)", margin: "3px 0" }}
-          />
+          <div className="h-px bg-[var(--border)] my-[3px]" />
           <button
             onClick={handleDelete}
-            style={{ ...S.menuItem, color: "#f87171" }}
+            className="flex items-center gap-2 px-[10px] py-[7px] rounded-[7px] cursor-pointer text-[13px] text-[#f87171] bg-transparent border-none w-full font-[inherit] text-left hover:bg-red-500/10"
           >
             <Trash2 size={13} /> Delete project
           </button>
@@ -218,7 +183,7 @@ const CardMenu = ({ website, onDelete }) => {
   );
 };
 
-// ── Single project row ───────────────────────────────────
+// ── Single project row ──────────────────────────────────────
 const ProjectRow = ({ website, onDelete, onClose, navigate }) => {
   const [hovered, setHovered] = useState(false);
 
@@ -230,50 +195,19 @@ const ProjectRow = ({ website, onDelete, onClose, navigate }) => {
       }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      style={{
-        ...S.projectCard,
-        background: hovered ? "var(--bg-card-hover)" : "transparent",
-      }}
+      className={`flex items-center gap-2.5 px-2 py-[9px] rounded-lg transition-[background] duration-[120ms] cursor-pointer ${
+        hovered ? "bg-[var(--bg-card-hover)]" : "bg-transparent"
+      }`}
     >
-      <div
-        style={{
-          width: 34,
-          height: 34,
-          borderRadius: 6,
-          flexShrink: 0,
-          background: "var(--bg-card)",
-          border: "1px solid var(--border)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          fontSize: 16,
-        }}
-      >
+      <div className="w-[34px] h-[34px] rounded-[6px] shrink-0 bg-[var(--bg-card)] border border-[var(--border)] flex items-center justify-center text-[16px]">
         {getEmoji(website.title)}
       </div>
 
-      <div style={{ flex: 1, minWidth: 0 }}>
-        <div
-          style={{
-            fontSize: 13,
-            color: "var(--text-primary)",
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            marginBottom: 2,
-          }}
-        >
+      <div className="flex-1 min-w-0">
+        <div className="text-[13px] text-[var(--text-primary)] whitespace-nowrap overflow-hidden text-ellipsis mb-0.5">
           {website.title}
         </div>
-        <div
-          style={{
-            fontSize: 11,
-            color: "var(--text-muted)",
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-          }}
-        >
+        <div className="text-[11px] text-[var(--text-muted)] whitespace-nowrap overflow-hidden text-ellipsis">
           {website.deployed ? "🟢 Live · " : ""}
           {timeAgo(website.updatedAt)}
         </div>
@@ -330,70 +264,35 @@ const Sidebar = ({
   };
 
   return (
-    <div
-      style={{
-        width: 260,
-        height: "100%",
-        background: "var(--bg-elevated)",
-        borderRight: "1px solid var(--border)",
-        display: "flex",
-        flexDirection: "column",
-        flexShrink: 0,
-      }}
-    >
+    <div className="w-[260px] h-full bg-[var(--bg-elevated)] border-r border-[var(--border)] flex flex-col shrink-0">
       {/* ── Header ── */}
-      <div
-        style={{
-          padding: "14px 14px 10px",
-          borderBottom: "1px solid var(--border)",
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            marginBottom: 12,
-          }}
-        >
-          <span
-            style={{
-              fontSize: 15,
-              fontWeight: 700,
-              color: "var(--text-primary)",
-              letterSpacing: "-0.3px",
-            }}
-          >
+      <div className="px-3.5 pt-3.5 pb-2.5 border-b border-[var(--border)]">
+        <div className="flex items-center justify-between mb-3">
+          <span className="text-[15px] font-bold text-[var(--text-primary)] tracking-[-0.3px]">
             ✦ WebGen.ai
           </span>
-          <button onClick={onClose} title="Collapse sidebar" style={S.iconBtn}>
+          <button
+            onClick={onClose}
+            title="Collapse sidebar"
+            className="w-7 h-7 rounded-[6px] border-none bg-transparent cursor-pointer flex items-center justify-center"
+          >
             <PanelLeftClose size={15} color="var(--text-secondary)" />
           </button>
         </div>
 
         {/* Search */}
-        <div style={S.searchBar}>
-          <Search
-            size={13}
-            color="var(--text-muted)"
-            style={{ flexShrink: 0 }}
-          />
+        <div className="flex items-center gap-2 bg-[var(--bg-card)] border border-[var(--border)] rounded-lg px-[10px] py-[7px]">
+          <Search size={13} color="var(--text-muted)" className="shrink-0" />
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search projects..."
-            style={S.searchInput}
+            className="bg-none border-none outline-none text-[13px] text-[var(--text-primary)] w-full font-[inherit] focus:outline-none focus:ring-0"
           />
           {search && (
             <button
               onClick={() => setSearch("")}
-              style={{
-                background: "none",
-                border: "none",
-                cursor: "pointer",
-                display: "flex",
-                padding: 0,
-              }}
+              className="background-none border-none cursor-pointer flex p-0"
             >
               <X size={12} color="var(--text-muted)" />
             </button>
@@ -402,7 +301,7 @@ const Sidebar = ({
       </div>
 
       {/* ── Nav ── */}
-      <div style={{ padding: "8px 8px 4px" }}>
+      <div className="px-2 pt-2 pb-1">
         {NAV_ITEMS.map(({ icon: Icon, label, key }) => {
           const count =
             key === "starred"
@@ -415,28 +314,16 @@ const Sidebar = ({
             <div
               key={key}
               onClick={() => setActiveNav(key)}
-              style={{
-                ...S.navItem,
-                background:
-                  activeNav === key ? "var(--bg-card-hover)" : "transparent",
-                color:
-                  activeNav === key
-                    ? "var(--text-primary)"
-                    : "var(--text-secondary)",
-              }}
+              className={`flex items-center gap-[9px] px-[10px] py-[7px] rounded-[7px] cursor-pointer text-[13px] transition-[background,color] duration-[120ms] select-none ${
+                activeNav === key
+                  ? "bg-[var(--bg-card-hover)] text-[var(--text-primary)]"
+                  : "bg-transparent text-[var(--text-secondary)]"
+              }`}
             >
               <Icon size={14} />
-              <span style={{ flex: 1 }}>{label}</span>
+              <span className="flex-1">{label}</span>
               {count > 0 && (
-                <span
-                  style={{
-                    fontSize: 11,
-                    color: "var(--text-muted)",
-                    background: "var(--bg-card)",
-                    padding: "1px 6px",
-                    borderRadius: 10,
-                  }}
-                >
+                <span className="text-[11px] text-[var(--text-muted)] bg-[var(--bg-card)] px-1.5 py-0.5 rounded-[10px]">
                   {count}
                 </span>
               )}
@@ -445,8 +332,8 @@ const Sidebar = ({
         })}
       </div>
 
-      <div style={S.divider} />
-      <div style={S.sectionLabel}>
+      <div className="h-px bg-[var(--border)] mx-2 my-1" />
+      <div className="text-[11px] font-semibold text-[var(--text-muted)] uppercase tracking-[0.6px] px-4 pt-2 pb-1">
         {activeNav === "starred"
           ? "Starred"
           : activeNav === "published"
@@ -455,64 +342,22 @@ const Sidebar = ({
       </div>
 
       {/* ── Project list ── */}
-      <div style={{ flex: 1, overflowY: "auto", padding: "0 8px 8px" }}>
+      <div className="flex-1 overflow-y-auto px-2 pb-2">
         {/* Shimmer loading */}
         {loadingWebsites &&
           [1, 2, 3].map((n) => (
-            <div
-              key={n}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 10,
-                padding: "9px 8px",
-              }}
-            >
-              <div
-                style={{
-                  width: 34,
-                  height: 34,
-                  borderRadius: 6,
-                  background: "var(--bg-card-hover)",
-                  flexShrink: 0,
-                  animation: "sbpulse 1.5s ease-in-out infinite",
-                }}
-              />
-              <div style={{ flex: 1 }}>
-                <div
-                  style={{
-                    height: 12,
-                    borderRadius: 4,
-                    background: "var(--bg-card-hover)",
-                    marginBottom: 6,
-                    width: "70%",
-                    animation: "sbpulse 1.5s ease-in-out infinite",
-                  }}
-                />
-                <div
-                  style={{
-                    height: 10,
-                    borderRadius: 4,
-                    background: "var(--bg-card-hover)",
-                    width: "50%",
-                    animation: "sbpulse 1.5s ease-in-out infinite",
-                  }}
-                />
+            <div key={n} className="flex items-center gap-2.5 px-2 py-[9px]">
+              <div className="w-[34px] h-[34px] rounded-[6px] bg-[var(--bg-card-hover)] shrink-0 animate-[sbpulse_1.5s_ease-in-out_infinite]" />
+              <div className="flex-1">
+                <div className="h-3 rounded-[4px] bg-[var(--bg-card-hover)] mb-1.5 w-[70%] animate-[sbpulse_1.5s_ease-in-out_infinite]" />
+                <div className="h-2.5 rounded-[4px] bg-[var(--bg-card-hover)] w-[50%] animate-[sbpulse_1.5s_ease-in-out_infinite]" />
               </div>
             </div>
           ))}
 
         {/* Empty states */}
         {!loadingWebsites && visibleWebsites.length === 0 && (
-          <p
-            style={{
-              fontSize: 12,
-              color: "var(--text-muted)",
-              padding: "16px 8px",
-              textAlign: "center",
-              lineHeight: 1.7,
-            }}
-          >
+          <p className="text-[12px] text-[var(--text-muted)] px-2 py-4 text-center leading-[1.7]">
             {search
               ? "No projects match your search."
               : activeNav === "starred"
@@ -538,8 +383,10 @@ const Sidebar = ({
         {/* Prompt ideas */}
         {activeNav === "all" && !search && (
           <>
-            <div style={{ ...S.divider, margin: "8px 0" }} />
-            <div style={S.sectionLabel}>Prompt ideas</div>
+            <div className="h-px bg-[var(--border)] my-2" />
+            <div className="text-[11px] font-semibold text-[var(--text-muted)] uppercase tracking-[0.6px] px-4 pt-2 pb-1">
+              Prompt ideas
+            </div>
             {PROMPT_IDEAS.map((p, i) => (
               <div
                 key={i}
@@ -548,59 +395,29 @@ const Sidebar = ({
                   onClose?.();
                   navigate("/generate");
                 }}
-                style={S.projectCard}
-                onMouseEnter={(e) =>
-                  (e.currentTarget.style.background = "var(--bg-card-hover)")
-                }
-                onMouseLeave={(e) =>
-                  (e.currentTarget.style.background = "transparent")
-                }
+                className="flex items-center gap-2.5 px-2 py-[9px] rounded-lg transition-[background] duration-[120ms] cursor-pointer bg-transparent hover:bg-[var(--bg-card-hover)]"
               >
                 <div
-                  style={{
-                    width: 34,
-                    height: 34,
-                    borderRadius: 6,
-                    background: p.bg,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontSize: 16,
-                    flexShrink: 0,
-                  }}
+                  className="w-[34px] h-[34px] rounded-[6px] flex items-center justify-center text-[16px] shrink-0"
+                  style={{ background: p.bg }}
                 >
                   {p.emoji}
                 </div>
-                <div style={{ flex: 1, minWidth: 0 }}>
+                <div className="flex-1 min-w-0">
                   <div
-                    style={{
-                      fontSize: 13,
-                      color: p.color,
-                      whiteSpace: "nowrap",
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                      marginBottom: 2,
-                      fontWeight: 500,
-                    }}
+                    className="text-[13px] whitespace-nowrap overflow-hidden text-ellipsis mb-0.5 font-medium"
+                    style={{ color: p.color }}
                   >
                     {p.label}
                   </div>
-                  <div
-                    style={{
-                      fontSize: 11,
-                      color: "var(--text-muted)",
-                      whiteSpace: "nowrap",
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                    }}
-                  >
+                  <div className="text-[11px] text-[var(--text-muted)] whitespace-nowrap overflow-hidden text-ellipsis">
                     {p.sub}
                   </div>
                 </div>
                 <ChevronRight
                   size={12}
                   color="var(--text-muted)"
-                  style={{ flexShrink: 0, opacity: 0.4 }}
+                  className="shrink-0 opacity-40"
                 />
               </div>
             ))}
@@ -609,136 +426,21 @@ const Sidebar = ({
       </div>
 
       {/* ── Footer / Profile ── */}
-      <div
-        style={{ borderTop: "1px solid var(--border)", padding: "10px 8px" }}
-      >
+      <div className="border-t border-[var(--border)] px-2 py-2.5">
         <div
           onClick={() => navigate("/profile")}
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 9,
-            padding: "6px 8px",
-            borderRadius: 7,
-            cursor: "pointer",
-          }}
-          onMouseEnter={(e) =>
-            (e.currentTarget.style.background = "var(--bg-card-hover)")
-          }
-          onMouseLeave={(e) =>
-            (e.currentTarget.style.background = "transparent")
-          }
+          className="flex items-center gap-2 px-2 py-1.5 rounded-[7px] cursor-pointer bg-transparent hover:bg-[var(--bg-card-hover)]"
         >
-          <div
-            style={{
-              width: 28,
-              height: 28,
-              borderRadius: "50%",
-              background: "linear-gradient(135deg,#6366f1,#8b5cf6)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: 11,
-              fontWeight: 600,
-              color: "#fff",
-              flexShrink: 0,
-            }}
-          >
+          <div className="w-7 h-7 rounded-full bg-[linear-gradient(135deg,#6366f1,#8b5cf6)] flex items-center justify-center text-[11px] font-bold text-white shrink-0">
             {initials}
           </div>
-          <span
-            style={{
-              fontSize: 13,
-              color: "var(--text-secondary)",
-              flex: 1,
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap",
-            }}
-          >
+          <span className="text-[13px] text-[var(--text-secondary)] flex-1 overflow-hidden text-ellipsis whitespace-nowrap">
             {userData?.name || "User"}
           </span>
         </div>
       </div>
     </div>
   );
-};
-
-// ── Shared styles ────────────────────────────────────────
-const S = {
-  iconBtn: {
-    width: 28,
-    height: 28,
-    borderRadius: 6,
-    border: "none",
-    background: "transparent",
-    cursor: "pointer",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  searchBar: {
-    display: "flex",
-    alignItems: "center",
-    gap: 8,
-    background: "var(--bg-card)",
-    border: "1px solid var(--border)",
-    borderRadius: 8,
-    padding: "7px 10px",
-  },
-  searchInput: {
-    background: "none",
-    border: "none",
-    outline: "none",
-    fontSize: 13,
-    color: "var(--text-primary)",
-    width: "100%",
-    fontFamily: "inherit",
-  },
-  navItem: {
-    display: "flex",
-    alignItems: "center",
-    gap: 9,
-    padding: "7px 10px",
-    borderRadius: 7,
-    cursor: "pointer",
-    fontSize: 13,
-    transition: "background 0.12s, color 0.12s",
-    userSelect: "none",
-  },
-  divider: { height: 1, background: "var(--border)", margin: "4px 8px" },
-  sectionLabel: {
-    fontSize: 11,
-    fontWeight: 600,
-    color: "var(--text-muted)",
-    textTransform: "uppercase",
-    letterSpacing: "0.6px",
-    padding: "8px 16px 4px",
-  },
-  projectCard: {
-    display: "flex",
-    alignItems: "center",
-    gap: 10,
-    padding: "9px 8px",
-    borderRadius: 8,
-    transition: "background 0.12s",
-    cursor: "pointer",
-  },
-  menuItem: {
-    display: "flex",
-    alignItems: "center",
-    gap: 8,
-    padding: "7px 10px",
-    borderRadius: 7,
-    cursor: "pointer",
-    fontSize: 13,
-    color: "var(--text-primary)",
-    background: "none",
-    border: "none",
-    width: "100%",
-    fontFamily: "inherit",
-    textAlign: "left",
-  },
 };
 
 export default Sidebar;

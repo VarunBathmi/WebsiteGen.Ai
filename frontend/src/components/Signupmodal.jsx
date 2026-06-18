@@ -6,33 +6,8 @@ import axios from "axios";
 import { serverUrl } from "../App";
 import { useDispatch } from "react-redux";
 import { setUserData } from "../redux/userSlice";
-
-const InputField = ({ type, value, onChange, placeholder, icon }) => {
-  const [focused, setFocused] = useState(false);
-  return (
-    <div className="relative w-full">
-      <motion.div
-        animate={{ opacity: focused ? 1 : 0 }}
-        transition={{ duration: 0.2 }}
-        className="absolute inset-0 rounded-xl bg-gradient-to-r from-purple-500/10 to-blue-500/10 pointer-events-none"
-      />
-      {icon && (
-        <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--text-muted)] text-sm pointer-events-none select-none">
-          {icon}
-        </span>
-      )}
-      <input
-        type={type}
-        value={value}
-        onChange={onChange}
-        placeholder={placeholder}
-        onFocus={() => setFocused(true)}
-        onBlur={() => setFocused(false)}
-        className={`w-full h-12 ${icon ? "pl-10" : "pl-4"} pr-4 rounded-xl bg-[var(--bg-card)] border border-[var(--border)] text-[var(--text-primary)] text-sm placeholder:text-[var(--text-muted)] outline-none focus:border-purple-500/50 transition-colors duration-200`}
-      />
-    </div>
-  );
-};
+import InputField from "./InputField"; // ← shared field with Eye/EyeOff toggle
+import { Sparkles } from "lucide-react";
 
 const SignupModal = ({ open, onClose, onSwitchToLogin }) => {
   const dispatch = useDispatch();
@@ -42,6 +17,13 @@ const SignupModal = ({ open, onClose, onSwitchToLogin }) => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  // Reset form when modal closes
+  React.useEffect(() => {
+    if (!open) {
+      setName(""); setEmail(""); setPassword(""); setConfirmPassword(""); setError("");
+    }
+  }, [open]);
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -69,8 +51,7 @@ const SignupModal = ({ open, onClose, onSwitchToLogin }) => {
       onClose();
     } catch (err) {
       setError(
-        err?.response?.data?.message ||
-          "Registration failed. Please try again.",
+        err?.response?.data?.message || "Registration failed. Please try again.",
       );
     } finally {
       setLoading(false);
@@ -94,9 +75,22 @@ const SignupModal = ({ open, onClose, onSwitchToLogin }) => {
     } catch (error) {
       if (error?.code === "auth/cancelled-popup-request") return;
       if (error?.code === "auth/popup-closed-by-user") return;
-      console.error("Google auth failed:", error);
+      setError("Google sign-in failed. Please try again.");
     }
   };
+
+  // Password strength meter
+  const strength =
+    password.length >= 12
+      ? 4
+      : password.length >= 9
+        ? 3
+        : password.length >= 6
+          ? 2
+          : password.length > 0
+            ? 1
+            : 0;
+  const strengthColors = ["bg-red-500", "bg-orange-400", "bg-yellow-400", "bg-green-400"];
 
   return (
     <AnimatePresence>
@@ -116,32 +110,37 @@ const SignupModal = ({ open, onClose, onSwitchToLogin }) => {
             onClick={(e) => e.stopPropagation()}
             className="relative w-full max-w-md p-[1px] rounded-3xl bg-gradient-to-r from-purple-500/40 via-blue-500/30 to-transparent"
           >
-            <div className="relative rounded-3xl bg-[var(--bg-elevated)] border border-[var(--border)]" style={{ boxShadow: 'var(--shadow-lg)' }}>
+            <div
+              className="relative rounded-3xl bg-[var(--bg-elevated)] border border-[var(--border)] shadow-[var(--shadow-lg)]"
+            >
               {/* Ambient glows */}
               <motion.div
                 animate={{ opacity: [0.25, 0.4, 0.25] }}
                 transition={{ duration: 6, repeat: Infinity }}
-                className="absolute -top-32 -left-32 w-80 h-80 bg-purple-500/30 blur-[140px]"
+                className="absolute -top-32 -left-32 w-80 h-80 bg-purple-500/30 blur-[140px] pointer-events-none"
               />
               <motion.div
                 animate={{ opacity: [0.2, 0.35, 0.2] }}
                 transition={{ duration: 6, repeat: Infinity, delay: 2 }}
-                className="absolute -bottom-32 -right-32 w-80 h-80 bg-blue-500/25 blur-[140px]"
+                className="absolute -bottom-32 -right-32 w-80 h-80 bg-blue-500/25 blur-[140px] pointer-events-none"
               />
 
               {/* Close button */}
               <button
                 onClick={onClose}
-                className="absolute top-5 right-5 z-20 text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition text-lg"
+                aria-label="Close modal"
+                className="absolute top-5 right-5 z-20 p-1.5 rounded-lg text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-card-hover)] transition-all"
               >
                 ✕
               </button>
 
               <div className="relative px-8 pt-10 pb-10 text-center">
                 {/* Badge */}
-                <h1 className="inline-block mb-5 px-4 py-1.5 rounded-full bg-[var(--bg-card)] border border-[var(--border)] text-xs text-[var(--text-primary)]">
-                  AI-Powered Website Builder
-                </h1>
+                <div
+                  className="inline-flex items-center gap-1.5 mb-5 px-3 py-1.5 rounded-full text-xs font-medium bg-[rgba(168,85,247,0.1)] border border-[rgba(168,85,247,0.2)] text-[#c084fc]"
+                >
+                  <Sparkles size={10} /> AI-Powered Website Builder
+                </div>
 
                 {/* Title */}
                 <h2 className="text-3xl font-semibold leading-tight mb-2">
@@ -151,77 +150,68 @@ const SignupModal = ({ open, onClose, onSwitchToLogin }) => {
                   </span>
                 </h2>
                 <p className="text-[var(--text-muted)] text-sm mb-6">
-                  Join WebGen.ai and start building today
+                  Join and start building today
                 </p>
 
-                {/* ── Register Form ── */}
-                <div className="flex flex-col gap-3 text-left">
+                {/* Register Form */}
+                <form
+                  className="flex flex-col gap-3 text-left"
+                  onSubmit={handleRegister}
+                >
                   <InputField
                     type="text"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="Full name"
-                    // icon="👤"
+                    autoComplete="name"
+                    id="signup-name"
                   />
                   <InputField
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="Email address"
-                    // icon="✉️"
+                    autoComplete="email"
+                    id="signup-email"
                   />
                   <InputField
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="Password (min 6 characters)"
-                    // icon="🔒"
+                    autoComplete="new-password"
+                    id="signup-password"
                   />
                   <InputField
                     type="password"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     placeholder="Confirm password"
-                    // icon="🔒"
+                    autoComplete="new-password"
+                    id="signup-confirm-password"
                   />
 
-                  {/* Password strength hint */}
-                  {password.length > 0 && (
+                  {/* Password strength */}
+                  {strength > 0 && (
                     <motion.div
                       initial={{ opacity: 0, y: -4 }}
                       animate={{ opacity: 1, y: 0 }}
                       className="flex gap-1.5 px-1"
                     >
-                      {[1, 2, 3, 4].map((level) => {
-                        const strength =
-                          password.length >= 12
-                            ? 4
-                            : password.length >= 9
-                              ? 3
-                              : password.length >= 6
-                                ? 2
-                                : 1;
-                        const colors = [
-                          "bg-red-500",
-                          "bg-orange-400",
-                          "bg-yellow-400",
-                          "bg-green-400",
-                        ];
-                        return (
-                          <div
-                            key={level}
-                            className={`h-1 flex-1 rounded-full transition-colors duration-300 ${
-                              level <= strength
-                                ? colors[strength - 1]
-                                : "bg-[var(--bg-card)]"
-                            }`}
-                          />
-                        );
-                      })}
+                      {[1, 2, 3, 4].map((level) => (
+                        <div
+                          key={level}
+                          className={`h-1 flex-1 rounded-full transition-colors duration-300 ${
+                            level <= strength
+                              ? strengthColors[strength - 1]
+                              : "bg-[var(--bg-card)]"
+                          }`}
+                        />
+                      ))}
                     </motion.div>
                   )}
 
-                  {/* Error message */}
+                  {/* Error */}
                   <AnimatePresence>
                     {error && (
                       <motion.p
@@ -236,27 +226,26 @@ const SignupModal = ({ open, onClose, onSwitchToLogin }) => {
                   </AnimatePresence>
 
                   <motion.button
-                    whileHover={{ scale: 1.03 }}
-                    whileTap={{ scale: 0.97 }}
-                    onClick={handleRegister}
+                    type="submit"
+                    whileHover={!loading ? { scale: 1.03 } : {}}
+                    whileTap={!loading ? { scale: 0.97 } : {}}
                     disabled={loading}
                     className="w-full h-12 mt-1 rounded-xl bg-gradient-to-r from-purple-500 to-blue-500 text-white font-semibold text-sm shadow-lg hover:shadow-purple-500/25 transition-shadow duration-300 disabled:opacity-60"
                   >
                     {loading ? "Creating account…" : "Create Account"}
                   </motion.button>
-                </div>
+                </form>
 
                 {/* Divider */}
                 <div className="flex items-center gap-4 my-5">
-                  <div className="h-px flex-1 bg-[var(--bg-card)]" />
-                  <span className="text-xs text-[var(--text-muted)] tracking-wide">
-                    or
-                  </span>
-                  <div className="h-px flex-1 bg-[var(--bg-card)]" />
+                  <div className="h-px flex-1 bg-[var(--border)]" />
+                  <span className="text-xs text-[var(--text-muted)] tracking-wide">or</span>
+                  <div className="h-px flex-1 bg-[var(--border)]" />
                 </div>
 
-                {/* Google Button */}
+                {/* Google */}
                 <motion.button
+                  type="button"
                   whileHover={{ scale: 1.04 }}
                   whileTap={{ scale: 0.96 }}
                   onClick={handleGoogleAuth}
@@ -264,7 +253,8 @@ const SignupModal = ({ open, onClose, onSwitchToLogin }) => {
                 >
                   <img
                     src="https://www.svgrepo.com/show/303108/google-icon-logo.svg"
-                    alt="google"
+                    alt=""
+                    aria-hidden
                     className="h-5 w-5"
                   />
                   Continue with Google
@@ -274,6 +264,7 @@ const SignupModal = ({ open, onClose, onSwitchToLogin }) => {
                 <p className="text-xs text-[var(--text-muted)] mt-5">
                   Already have an account?{" "}
                   <button
+                    type="button"
                     onClick={onSwitchToLogin}
                     className="text-purple-400 hover:text-purple-300 transition font-medium underline underline-offset-2"
                   >

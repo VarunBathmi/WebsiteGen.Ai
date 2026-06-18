@@ -1,5 +1,3 @@
-
-
 import generateResponse from "../config/openRouter.js";
 import User from "../models/user.model.js";
 import Website from "../models/website.model.js";
@@ -354,11 +352,11 @@ IMPORTANT: Return the COMPLETE HTML. Do NOT truncate.`;
       { role: "assistant", content: parsed.message || "Changes applied." },
     );
 
-// ✅ ADD KARO:
-if (parsed.code.length > 500000) {
-  await User.findByIdAndUpdate(req.user._id, { $inc: { credits: 25 } });
-  return res.status(400).json({ message: "Generated code too large." });
-}
+    // ✅ ADD KARO:
+    if (parsed.code.length > 500000) {
+      await User.findByIdAndUpdate(req.user._id, { $inc: { credits: 25 } });
+      return res.status(400).json({ message: "Generated code too large." });
+    }
 
     website.latestCode = parsed.code;
     await website.save();
@@ -384,8 +382,6 @@ export const getAll = async (req, res) => {
       updatedAt: -1,
     });
 
-
-  
     return res.status(200).json(websites);
   } catch (error) {
     console.error("getAll error:", error);

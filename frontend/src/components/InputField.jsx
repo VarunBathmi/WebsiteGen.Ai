@@ -23,12 +23,9 @@ const InputField = ({
     <div className="relative w-full group overflow-hidden rounded-xl">
       {/* Focus glow */}
       <div
-        className="absolute inset-0 rounded-xl pointer-events-none transition-opacity duration-200"
-        style={{
-          background:
-            "linear-gradient(135deg, rgba(168,85,247,0.07), rgba(59,130,246,0.07))",
-          opacity: focused ? 1 : 0,
-        }}
+        className={`absolute inset-0 rounded-xl pointer-events-none transition-opacity duration-200 bg-gradient-to-br from-[rgba(168,85,247,0.07)] to-[rgba(59,130,246,0.07)] ${
+          focused ? "opacity-100" : "opacity-0"
+        }`}
       />
 
       <input
@@ -40,22 +37,11 @@ const InputField = ({
         autoComplete={autoComplete}
         onFocus={() => setFocused(true)}
         onBlur={() => setFocused(false)}
-        className="w-full h-11 pl-4 pr-10 rounded-xl text-[var(--text-primary)] text-sm placeholder:text-[var(--text-muted)] appearance-none outline-none focus:outline-none focus:ring-0 transition-colors duration-150"
-        // className="w-full h-11 pl-4 pr-10 rounded-xl text-[var(--text-primary)] text-sm placeholder:text-[var(--text-muted)] appearance-none focus:ring-0 focus:outline-none outline-none transition-colors duration-150"
-        // style={{
-        //   background: "var(--bg-card)",
-        //   border: focused
-        //     ? "1px solid rgba(168,85,247,0.5)"
-        //     : "1px solid var(--border)",
-        // }}
-        style={{
-          background: "var(--bg-card)",
-          border: focused
-            ? "1.5px solid var(--accent)"
-            : "1px solid var(--border)",
-          boxShadow: focused ? "0 0 0 3px var(--accent-glow)" : "none",
-          transition: "border 0.15s, box-shadow 0.15s",
-        }}
+        className={`w-full h-11 pl-4 pr-10 rounded-xl text-[var(--text-primary)] text-sm placeholder:text-[var(--text-muted)] appearance-none outline-none focus:outline-none focus:ring-0 bg-[var(--bg-card)] transition-[border,box-shadow] duration-150 ${
+          focused
+            ? "border-[1.5px] border-[var(--accent)] shadow-[0_0_0_3px_var(--accent-glow)]"
+            : "border border-[var(--border)] shadow-none"
+        }`}
       />
 
       {isPassword && (

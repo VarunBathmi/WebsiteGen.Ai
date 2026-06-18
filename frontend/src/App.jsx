@@ -5,20 +5,18 @@ import useGetCurrentUser from "./hooks/useGetCurrentuser";
 import { useSelector } from "react-redux";
 import { Toaster } from "react-hot-toast";
 import { ThemeProvider } from "./context/ThemeContext";
-// Add this import at the top:
 import LiveSite from "./pages/LiveSite";
 
-// Add this route inside your <Routes> — NO auth protection, it's public:
-<Route path="/site/:slug" element={<LiveSite />} />;
-// Lazy-load heavier pages for better initial load
-const Dashboard = lazy(() => import("./pages/Dashboard"));
-const Generate = lazy(() => import("./pages/Generate"));
+// Lazy-load heavier pages for better initial load performance
+const Dashboard     = lazy(() => import("./pages/Dashboard"));
+const Generate      = lazy(() => import("./pages/Generate"));
 const WebsiteEditor = lazy(() => import("./pages/WebsiteEditor"));
-const ProfilePage = lazy(() => import("./pages/ProfilePage"));
-const EditProfile = lazy(() => import("./pages/EditProfile"));
-const Settings = lazy(() => import("./pages/Settings"));
+const ProfilePage   = lazy(() => import("./pages/ProfilePage"));
+const EditProfile   = lazy(() => import("./pages/EditProfile"));
+const Settings      = lazy(() => import("./pages/Settings"));
 
-export const serverUrl = "http://localhost:8000";
+// API base URL — set VITE_API_URL in .env for production
+export const serverUrl = import.meta.env.VITE_API_URL || "http://localhost:8000";
 
 const PageLoader = () => (
   <div className="h-screen w-screen flex items-center justify-center bg-[var(--bg-base)]">
@@ -35,45 +33,35 @@ const PageLoader = () => (
   </div>
 );
 
+// Blocks protected routes until /api/user/me resolves — prevents route flicker
+const ProtectedRoute = ({ children }) => {
+  const { userData, authResolved } = useSelector((state) => state.user);
+  if (!authResolved) return <PageLoader />;
+  return userData ? children : <Navigate to="/" replace />;
+};
+
 const App = () => {
   useGetCurrentUser();
-  const { userData } = useSelector((state) => state.user);
 
   return (
     <ThemeProvider>
       <BrowserRouter>
         <Suspense fallback={<PageLoader />}>
           <Routes>
-            <Route path="/" element={<Home />} />
-            <Route
-              path="/dashboard"
-              element={userData ? <Dashboard /> : <Home />}
-            />
-            <Route
-              path="/generate"
-              element={userData ? <Generate /> : <Home />}
-            />
-            <Route
-              path="/editor/:id"
-              element={userData ? <WebsiteEditor /> : <Home />}
-            />
-            {/* ── New routes ── */}
-            <Route
-              path="/profile"
-              element={userData ? <ProfilePage /> : <Home />}
-            />
-            <Route
-              path="/edit-profile"
-              element={userData ? <EditProfile /> : <Home />}
-            />
-            <Route
-              path="/settings"
-              element={userData ? <Settings /> : <Home />}
-            />
-
-            {/* Redirect any other unmatched paths to home */}
-            <Route path="*" element={<Navigate to="/" replace />} />
+            {/* Public */}
+            <Route path="/"           element={<Home />} />
             <Route path="/site/:slug" element={<LiveSite />} />
+
+            {/* Protected */}
+            <Route path="/dashboard"    element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+            <Route path="/generate"     element={<ProtectedRoute><Generate /></ProtectedRoute>} />
+            <Route path="/editor/:id"   element={<ProtectedRoute><WebsiteEditor /></ProtectedRoute>} />
+            <Route path="/profile"      element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
+            <Route path="/edit-profile" element={<ProtectedRoute><EditProfile /></ProtectedRoute>} />
+            <Route path="/settings"     element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+
+            {/* Fallback */}
+            <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </Suspense>
         <Toaster

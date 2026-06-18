@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { motion } from "motion/react";
-import { ArrowLeft, Moon, Sun, User, Trash2, Loader2 } from "lucide-react";
+import { ArrowLeft, Moon, Sun, Monitor, User, Trash2, Loader2 } from "lucide-react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useTheme } from "../context/ThemeContext";
 import { useDispatch, useSelector } from "react-redux";
@@ -11,26 +11,40 @@ import { serverUrl } from "../App";
 
 const Section = ({ title, children }) => (
   <div
-    className="rounded-2xl p-5 mb-4"
-    style={{
-      background: "var(--bg-elevated)",
-      border: "1px solid var(--border)",
-    }}
+    className="rounded-2xl p-5 mb-4 bg-[var(--bg-elevated)] border border-[var(--border)]"
   >
     {title && <h3 className="text-[13px] font-semibold mb-4">{title}</h3>}
     {children}
   </div>
 );
 
+// 3-way theme option button
+const ThemeOption = ({ label, icon: Icon, value, current, onClick }) => {
+  const active = current === value;
+  return (
+    <button
+      onClick={() => onClick(value)}
+      aria-pressed={active}
+      className={`flex flex-col items-center gap-1.5 px-4 py-3 rounded-xl text-[12px] font-medium transition-all flex-1 ${
+        active
+          ? "bg-[var(--accent-glow)] border-[1.5px] border-[var(--accent)] text-[var(--accent)]"
+          : "bg-[var(--bg-card)] border border-[var(--border)] text-[var(--text-muted)]"
+      }`}
+    >
+      <Icon size={16} />
+      {label}
+    </button>
+  );
+};
+
 const Settings = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { theme, toggleTheme } = useTheme();
+  const { theme, preference, setTheme, toggleTheme } = useTheme();
   const { userData } = useSelector((s) => s.user);
   const dispatch = useDispatch();
   const [deleting, setDeleting] = useState(false);
 
-  // Auto-scroll to billing section if ?tab=billing
   const isBilling = searchParams.get("tab") === "billing";
 
   const handleDeleteAccount = () => {
@@ -78,19 +92,19 @@ const Settings = () => {
     );
   };
 
+  // Friendly label for the current resolved theme
+  const themeLabel = {
+    light: "Light theme active",
+    dark: "Dark theme active",
+  }[theme];
+
   return (
     <div
-      className="min-h-screen"
-      style={{ background: "var(--bg-base)", color: "var(--text-primary)" }}
+      className="min-h-screen bg-[var(--bg-base)] text-[var(--text-primary)]"
     >
       {/* Header */}
       <header
-        className="sticky top-0 z-40 h-14 flex items-center px-5 sm:px-8"
-        style={{
-          background: "var(--bg-elevated)",
-          borderBottom: "1px solid var(--border)",
-          backdropFilter: "blur(20px)",
-        }}
+        className="sticky top-0 z-40 h-14 flex items-center px-5 sm:px-8 bg-[var(--bg-elevated)] border-b border-[var(--border)] backdrop-blur-[20px]"
       >
         <div className="max-w-2xl mx-auto w-full flex items-center gap-3">
           <button
@@ -106,38 +120,47 @@ const Settings = () => {
       <main className="max-w-2xl mx-auto px-5 sm:px-8 py-10 space-y-4">
         {/* ── Appearance ── */}
         <Section title="Appearance">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
+          <div>
+            <div className="flex items-center gap-2 mb-3">
               {theme === "dark" ? (
-                <Moon size={16} className="text-[var(--text-muted)]" />
+                <Moon size={15} className="text-[var(--text-muted)]" />
               ) : (
-                <Sun size={16} className="text-[var(--text-muted)]" />
+                <Sun size={15} className="text-[var(--text-muted)]" />
               )}
               <div>
-                <p className="text-[13px] font-medium">Dark Mode</p>
+                <p className="text-[13px] font-medium">Theme</p>
                 <p className="text-[11px] text-[var(--text-muted)]">
-                  {theme === "dark"
-                    ? "Currently using dark theme"
-                    : "Currently using light theme"}
+                  {preference === "system"
+                    ? `System preference — ${themeLabel}`
+                    : themeLabel}
                 </p>
               </div>
             </div>
-            <button
-              onClick={toggleTheme}
-              aria-label="Toggle dark mode"
-              className="relative w-11 h-6 rounded-full transition-all duration-300 focus:outline-none"
-              style={{
-                background:
-                  theme === "dark" ? "var(--accent)" : "var(--border-strong)",
-              }}
-            >
-              <motion.span
-                layout
-                transition={{ type: "spring", stiffness: 500, damping: 35 }}
-                className="absolute top-1 w-4 h-4 rounded-full bg-white shadow-sm"
-                style={{ left: theme === "dark" ? "calc(100% - 20px)" : "4px" }}
+
+            {/* 3-way selector */}
+            <div className="flex gap-2 mt-3">
+              <ThemeOption
+                label="Light"
+                icon={Sun}
+                value="light"
+                current={preference}
+                onClick={setTheme}
               />
-            </button>
+              <ThemeOption
+                label="Dark"
+                icon={Moon}
+                value="dark"
+                current={preference}
+                onClick={setTheme}
+              />
+              <ThemeOption
+                label="System"
+                icon={Monitor}
+                value="system"
+                current={preference}
+                onClick={setTheme}
+              />
+            </div>
           </div>
         </Section>
 
@@ -146,8 +169,7 @@ const Settings = () => {
           <div className="space-y-3">
             <button
               onClick={() => navigate("/edit-profile")}
-              className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left transition-all hover:bg-[var(--bg-card-hover)]"
-              style={{ border: "1px solid var(--border)" }}
+              className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left transition-all hover:bg-[var(--bg-card-hover)] border border-[var(--border)]"
             >
               <User size={15} className="text-[var(--text-muted)]" />
               <div>
@@ -163,11 +185,7 @@ const Settings = () => {
         {/* ── Credits / Billing ── */}
         <Section title="Credits & Billing">
           <div
-            className="flex items-center justify-between p-4 rounded-xl mb-3"
-            style={{
-              background: "var(--bg-base)",
-              border: "1px solid var(--border)",
-            }}
+            className="flex items-center justify-between p-4 rounded-xl mb-3 bg-[var(--bg-base)] border border-[var(--border)]"
           >
             <div>
               <p className="text-[13px] font-medium">Available Credits</p>
@@ -176,18 +194,15 @@ const Settings = () => {
               </p>
             </div>
             <span
-              className="text-xl font-bold"
-              style={{
-                color:
-                  (userData?.credits ?? 0) < 20 ? "#ef4444" : "var(--accent)",
-              }}
+              className={`text-xl font-bold ${
+                (userData?.credits ?? 0) < 20 ? "text-[#ef4444]" : "text-[var(--accent)]"
+              }`}
             >
               {userData?.credits ?? 0}
             </span>
           </div>
           <div
-            className="h-2 rounded-full overflow-hidden"
-            style={{ background: "var(--border)" }}
+            className="h-2 rounded-full overflow-hidden bg-[var(--border)]"
           >
             <motion.div
               initial={{ width: 0 }}
@@ -195,13 +210,11 @@ const Settings = () => {
                 width: `${Math.min(((userData?.credits ?? 0) / 500) * 100, 100)}%`,
               }}
               transition={{ duration: 0.8, ease: "easeOut" }}
-              className="h-full rounded-full"
-              style={{
-                background:
-                  (userData?.credits ?? 0) < 20
-                    ? "linear-gradient(90deg,#ef4444,#f97316)"
-                    : "linear-gradient(90deg,var(--accent),#3b82f6)",
-              }}
+              className={`h-full rounded-full ${
+                (userData?.credits ?? 0) < 20
+                  ? "bg-[linear-gradient(90deg,#ef4444,#f97316)]"
+                  : "bg-[linear-gradient(90deg,var(--accent),#3b82f6)]"
+              }`}
             />
           </div>
           <p className="text-[11px] text-[var(--text-muted)] mt-2">

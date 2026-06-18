@@ -9,12 +9,7 @@ const ThemeToggle = () => {
   return (
     <button
       onClick={toggleTheme}
-      className="fixed bottom-6 right-6 z-50 p-3 rounded-full flex items-center justify-center transition-all shadow-lg"
-      style={{ 
-        background: "var(--bg-elevated)", 
-        border: "1px solid var(--border-strong)",
-        color: "var(--text-primary)" 
-      }}
+      className="fixed bottom-6 right-6 z-50 p-3 rounded-full flex items-center justify-center transition-all shadow-lg bg-[var(--bg-elevated)] border border-[var(--border-strong)] text-[var(--text-primary)]"
       aria-label="Toggle Theme"
     >
       <AnimatePresence mode="wait">

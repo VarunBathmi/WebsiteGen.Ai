@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import {
   ArrowLeft,
@@ -47,13 +47,7 @@ const Field = ({
           onChange={onChange}
           placeholder={placeholder}
           disabled={disabled}
-          className="w-full px-3 py-2.5 text-[13px] rounded-xl text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none transition-all disabled:opacity-50"
-          style={{
-            background: "var(--bg-base)",
-            border: "1px solid var(--border)",
-          }}
-          onFocus={(e) => (e.target.style.borderColor = "var(--accent)")}
-          onBlur={(e) => (e.target.style.borderColor = "var(--border)")}
+          className="w-full px-3 py-2.5 text-[13px] rounded-xl text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none transition-all disabled:opacity-50 bg-[var(--bg-base)] border border-[var(--border)] focus:border-[var(--accent)]"
         />
         {isPass && (
           <button
@@ -71,13 +65,7 @@ const Field = ({
 
 // ── Section card wrapper ──────────────────────────────────
 const Section = ({ title, children }) => (
-  <div
-    className="rounded-2xl p-5 mb-4"
-    style={{
-      background: "var(--bg-elevated)",
-      border: "1px solid var(--border)",
-    }}
-  >
+  <div className="rounded-2xl p-5 mb-4 bg-[var(--bg-elevated)] border border-[var(--border)]">
     {title && (
       <h3 className="text-[13px] font-semibold text-[var(--text-primary)] mb-4">
         {title}
@@ -106,12 +94,32 @@ const PersonalTab = () => {
 
   const set = (k) => (e) => setForm((p) => ({ ...p, [k]: e.target.value }));
 
+  // FIX: Sync avatar preview if userData updates externally
+  useEffect(() => {
+    if (userData?.avatar && !avatarFile) {
+      setAvatarPreview(userData.avatar);
+    }
+  }, [userData?.avatar]);
+
+  // FIX: Revoke blob URL on unmount to prevent memory leak
+  useEffect(() => {
+    return () => {
+      if (avatarPreview?.startsWith("blob:")) {
+        URL.revokeObjectURL(avatarPreview);
+      }
+    };
+  }, [avatarPreview]);
+
   const handleAvatarChange = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
     if (file.size > 5 * 1024 * 1024) {
       toast.error("Max 5MB");
       return;
+    }
+    // FIX: Revoke previous blob URL before creating new one
+    if (avatarPreview?.startsWith("blob:")) {
+      URL.revokeObjectURL(avatarPreview);
     }
     setAvatarFile(file);
     setAvatarPreview(URL.createObjectURL(file));
@@ -125,6 +133,7 @@ const PersonalTab = () => {
     setSaving(true);
     try {
       let avatarUrl = userData?.avatar;
+
       if (avatarFile) {
         const fd = new FormData();
         fd.append("avatar", avatarFile);
@@ -133,7 +142,10 @@ const PersonalTab = () => {
           headers: { "Content-Type": "multipart/form-data" },
         });
         avatarUrl = data.avatar;
+        // FIX: Dispatch updated user from avatar response immediately
+        dispatch(setUserData(data.user));
       }
+
       const { data } = await axios.put(
         `${serverUrl}/api/user/profile`,
         { ...form, avatar: avatarUrl },
@@ -163,18 +175,22 @@ const PersonalTab = () => {
         <div className="flex items-center gap-4">
           <div className="relative">
             <div
-              className="w-16 h-16 rounded-xl overflow-hidden flex items-center justify-center text-lg font-bold text-white"
-              style={{
-                background: avatarPreview
-                  ? "transparent"
-                  : "linear-gradient(135deg, var(--accent), #3b82f6)",
-              }}
+              className={`w-16 h-16 rounded-xl overflow-hidden flex items-center justify-center text-lg font-bold text-white ${
+                avatarPreview
+                  ? "bg-transparent"
+                  : "bg-[linear-gradient(135deg,var(--accent),#3b82f6)]"
+              }`}
             >
               {avatarPreview ? (
                 <img
                   src={avatarPreview}
                   alt="avatar"
                   className="w-full h-full object-cover"
+                  // FIX: Fallback to initials if image URL breaks
+                  onError={(e) => {
+                    e.target.style.display = "none";
+                    setAvatarPreview(null);
+                  }}
                 />
               ) : (
                 initials
@@ -182,8 +198,7 @@ const PersonalTab = () => {
             </div>
             <button
               onClick={() => fileRef.current?.click()}
-              className="absolute -bottom-1 -right-1 w-6 h-6 rounded-lg flex items-center justify-center text-white"
-              style={{ background: "var(--accent)" }}
+              className="absolute -bottom-1 -right-1 w-6 h-6 rounded-lg flex items-center justify-center text-white bg-[var(--accent)]"
             >
               <Camera size={11} />
             </button>
@@ -201,8 +216,7 @@ const PersonalTab = () => {
             </p>
             <button
               onClick={() => fileRef.current?.click()}
-              className="text-[11px] hover:underline mt-0.5"
-              style={{ color: "var(--accent)" }}
+              className="text-[11px] hover:underline mt-0.5 text-[var(--accent)]"
             >
               Upload new photo
             </button>
@@ -246,13 +260,7 @@ const PersonalTab = () => {
             onChange={set("bio")}
             placeholder="Short bio…"
             rows={3}
-            className="w-full px-3 py-2.5 text-[13px] rounded-xl text-[var(--text-primary)] placeholder:text-[var(--text-muted)] resize-none focus:outline-none transition-all"
-            style={{
-              background: "var(--bg-base)",
-              border: "1px solid var(--border)",
-            }}
-            onFocus={(e) => (e.target.style.borderColor = "var(--accent)")}
-            onBlur={(e) => (e.target.style.borderColor = "var(--border)")}
+            className="w-full px-3 py-2.5 text-[13px] rounded-xl text-[var(--text-primary)] placeholder:text-[var(--text-muted)] resize-none focus:outline-none transition-all bg-[var(--bg-base)] border border-[var(--border)] focus:border-[var(--accent)]"
           />
         </div>
       </Section>
@@ -263,10 +271,7 @@ const PersonalTab = () => {
           whileTap={{ scale: 0.97 }}
           onClick={save}
           disabled={saving}
-          className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-white text-[13px] font-semibold disabled:opacity-60"
-          style={{
-            background: "linear-gradient(135deg, var(--accent), #3b82f6)",
-          }}
+          className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-white text-[13px] font-semibold disabled:opacity-60 bg-gradient-to-br from-[var(--accent)] to-[#3b82f6]"
         >
           {saving ? (
             <Loader2 size={13} className="animate-spin" />
@@ -346,10 +351,7 @@ const SecurityTab = () => {
           whileTap={{ scale: 0.97 }}
           onClick={save}
           disabled={saving}
-          className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-white text-[13px] font-semibold disabled:opacity-60"
-          style={{
-            background: "linear-gradient(135deg, var(--accent), #3b82f6)",
-          }}
+          className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-white text-[13px] font-semibold disabled:opacity-60 bg-gradient-to-br from-[var(--accent)] to-[#3b82f6]"
         >
           {saving ? (
             <Loader2 size={13} className="animate-spin" />
@@ -365,7 +367,9 @@ const SecurityTab = () => {
 
 // ══ TAB 3: Appearance ══════════════════════════════════════
 const AppearanceTab = () => {
-  const { theme, toggleTheme } = useTheme();
+  // Use `preference` (the user's explicit choice: light/dark/system)
+  // and `setTheme` (accepts all three values) from the updated ThemeContext
+  const { preference, setTheme } = useTheme();
 
   const options = [
     { value: "light", icon: Sun, label: "Light" },
@@ -377,32 +381,27 @@ const AppearanceTab = () => {
     <Section title="Theme">
       <div className="grid grid-cols-3 gap-3">
         {options.map(({ value, icon: Icon, label }) => {
-          const isCurrentTheme = theme === value;
+          // Active = what the user explicitly chose, not the resolved theme
+          const active = preference === value;
           return (
             <button
               key={value}
-              onClick={() => {
-                if (value !== "system" && theme !== value) toggleTheme();
-              }}
-              className="flex flex-col items-center gap-2 p-4 rounded-xl transition-all duration-200"
-              style={{
-                border: `1px solid ${isCurrentTheme || value === "system" ? "var(--accent)" : "var(--border)"}`,
-                background: isCurrentTheme
-                  ? "var(--accent-glow)"
-                  : "var(--bg-base)",
-              }}
+              onClick={() => setTheme(value)} // works for all three options
+              aria-pressed={active}
+              className={`flex flex-col items-center gap-2 p-4 rounded-xl transition-all duration-200 border ${
+                active
+                  ? "border-[var(--accent)] bg-[var(--accent-glow)]"
+                  : "border-[var(--border)] bg-[var(--bg-base)]"
+              }`}
             >
               <Icon
                 size={18}
-                style={{
-                  color: isCurrentTheme ? "var(--accent)" : "var(--text-muted)",
-                }}
+                className={
+                  active ? "text-[var(--accent)]" : "text-[var(--text-muted)]"
+                }
               />
               <span
-                className="text-[12px] font-medium"
-                style={{
-                  color: isCurrentTheme ? "var(--accent)" : "var(--text-muted)",
-                }}
+                className={`text-[12px] font-medium ${active ? "text-[var(--accent)]" : "text-[var(--text-muted)]"}`}
               >
                 {label}
               </span>
@@ -414,7 +413,7 @@ const AppearanceTab = () => {
   );
 };
 
-// ══ ONLY 3 TABS — Notifications & Preferences removed ══════
+// ══ TABS ═══════════════════════════════════════════════════
 const TABS = [
   { id: "personal", label: "Personal Information", icon: User },
   { id: "security", label: "Security", icon: Shield },
@@ -439,16 +438,9 @@ const EditProfile = () => {
   };
 
   return (
-    <div className="min-h-screen" style={{ background: "var(--bg-base)" }}>
+    <div className="min-h-screen bg-[var(--bg-base)]">
       {/* Sticky header */}
-      <header
-        className="sticky top-0 z-40 h-14 flex items-center px-5 sm:px-8"
-        style={{
-          background: "var(--bg-elevated)",
-          borderBottom: "1px solid var(--border)",
-          backdropFilter: "blur(20px)",
-        }}
-      >
+      <header className="sticky top-0 z-40 h-14 flex items-center px-5 sm:px-8 bg-[var(--bg-elevated)] border-b border-[var(--border)] backdrop-blur-[20px]">
         <div className="max-w-5xl mx-auto w-full flex items-center gap-3">
           <button
             onClick={() => navigate(-1)}
@@ -471,14 +463,11 @@ const EditProfile = () => {
                 <button
                   key={id}
                   onClick={() => setActiveTab(id)}
-                  className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-left whitespace-nowrap transition-all duration-150 text-[12px] font-medium shrink-0"
-                  style={{
-                    background:
-                      activeTab === id ? "var(--accent-glow)" : "transparent",
-                    color:
-                      activeTab === id ? "var(--accent)" : "var(--text-muted)",
-                    border: `1px solid ${activeTab === id ? "var(--accent)" : "transparent"}`,
-                  }}
+                  className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-left whitespace-nowrap transition-all duration-150 text-[12px] font-medium shrink-0 border ${
+                    activeTab === id
+                      ? "bg-[var(--accent-glow)] text-[var(--accent)] border-[var(--accent)]"
+                      : "bg-transparent text-[var(--text-muted)] border-transparent"
+                  }`}
                 >
                   <Icon size={14} />
                   {label}
