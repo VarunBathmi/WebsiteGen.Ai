@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import axios from "axios";
 import { serverUrl } from "../App";
 import { useDispatch } from "react-redux";
-import { setUserData, clearUserData } from "../redux/userSlice";
+import { setUserData, clearUserData, setAuthLoading } from "../redux/userSlice";
 
 /**
  * Runs once on mount. Restores the session from the HttpOnly cookie by
@@ -15,6 +15,7 @@ const useGetCurrentUser = () => {
 
   useEffect(() => {
     const getCurrentUser = async () => {
+      dispatch(setAuthLoading(true));
       try {
         const { data } = await axios.get(`${serverUrl}/api/user/me`, {
           withCredentials: true,
@@ -23,6 +24,8 @@ const useGetCurrentUser = () => {
       } catch {
         // Not authenticated — mark resolved so the UI can react correctly.
         dispatch(clearUserData());
+      } finally {
+        dispatch(setAuthLoading(false));
       }
     };
     getCurrentUser();

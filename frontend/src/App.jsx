@@ -35,8 +35,8 @@ const PageLoader = () => (
 
 // Blocks protected routes until /api/user/me resolves — prevents route flicker
 const ProtectedRoute = ({ children }) => {
-  const { userData, authResolved } = useSelector((state) => state.user);
-  if (!authResolved) return <PageLoader />;
+  const { userData, authLoading } = useSelector((state) => state.user);
+  if (authLoading) return <PageLoader />;
   return userData ? children : <Navigate to="/" replace />;
 };
 

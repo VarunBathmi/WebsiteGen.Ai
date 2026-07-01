@@ -33,6 +33,12 @@ app.use(
   })
 );
 
+// COOP header middleware to allow Firebase Google OAuth popups
+app.use((req, res, next) => {
+  res.setHeader("Cross-Origin-Opener-Policy", "same-origin-allow-popups");
+  next();
+});
+
 // health check
 app.get("/", (req, res) => res.json({ status: "ok" }));
 

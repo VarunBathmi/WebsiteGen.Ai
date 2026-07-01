@@ -1,46 +1,55 @@
+
+import { createSlice } from "@reduxjs/toolkit";
+
 // const userSlice = createSlice({
 //   name: "user",
 //   initialState: {
 //     userData: null,
+//     authLoading: true,
 //   },
 //   reducers: {
 //     setUserData: (state, action) => {
 //       state.userData = action.payload;
+//       state.authLoading = false;
+//     },
+//     // Call this when the session check fails (unauthenticated) so
+//     // ProtectedRoute knows it's safe to redirect.
+//     clearUserData: (state) => {
+//       state.userData = null;
+//       state.authLoading = false;
+//     },
+//     setAuthLoading: (state, action) => {
+//       state.authLoading = action.payload;
 //     },
 //   },
 // });
 
-// export const { setUserData } = userSlice.actions;
+// export const { setUserData, clearUserData, setAuthLoading } = userSlice.actions;
 
 // export default userSlice.reducer;
-
-
-import { createSlice } from "@reduxjs/toolkit";
 
 const userSlice = createSlice({
   name: "user",
   initialState: {
     userData: null,
-    // authResolved: false means the /api/user/me call has not completed yet.
-    // ProtectedRoute waits for this before deciding to redirect, which
-    // eliminates the "route flicker" where an authenticated user briefly
-    // sees the Home page on a hard refresh.
-    authResolved: false,
+    authLoading: true, // authLoading is true initially to guard loading state
   },
   reducers: {
     setUserData: (state, action) => {
       state.userData = action.payload;
-      state.authResolved = true;
+      state.authLoading = false; // set loading to false on success
     },
     // Call this when the session check fails (unauthenticated) so
     // ProtectedRoute knows it's safe to redirect.
     clearUserData: (state) => {
       state.userData = null;
-      state.authResolved = true;
+      state.authLoading = false; // set loading to false on failure
+    },
+    setAuthLoading: (state, action) => {
+      state.authLoading = action.payload;
     },
   },
 });
 
-export const { setUserData, clearUserData } = userSlice.actions;
-
-export default userSlice.reducer;
+export const { setUserData, clearUserData, setAuthLoading } = userSlice.actions;
+ export default userSlice.reducer;
